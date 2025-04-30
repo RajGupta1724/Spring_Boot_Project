@@ -12,21 +12,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
 @RestController
 public class EmpController {
 
-     EmployeeService employeeService=new EmployeeServiceImpl();
+    //  EmployeeService employeeService=new EmployeeServiceImpl();
 
     //dependency injection
-    // @Autowired
-    // EmployeeService employeeService;
+    @Autowired
+    EmployeeService employeeService;
 
     @GetMapping("employees")
     public List<Employee> getAllEmployees() {
         return employeeService.readEmployees();
+    }
+
+    @GetMapping("employees/{id}")
+    public Employee getAllEmployeesById(@PathVariable Long id) {
+        System.out.println("yes, id is fetching...");
+        return employeeService.readEmployee(id);
     }
 
     @PostMapping("employees")
@@ -43,4 +51,9 @@ public class EmpController {
         return "Not found";    
     }
     
+    @PutMapping("employees/{id}")
+    public String putMethodName(@PathVariable Long id, @RequestBody Employee employee) {
+       
+        return employeeService.updateEmployee(id, employee);
+    }
 }
