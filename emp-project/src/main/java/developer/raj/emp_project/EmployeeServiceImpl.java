@@ -2,6 +2,7 @@ package developer.raj.emp_project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public String createEmployee(Employee employee) {
+        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
+            return "Employee already exists with this email!";
+        }
+    
         EmployeeEntity employeeEntity=new EmployeeEntity();
         BeanUtils.copyProperties(employee, employeeEntity);
 
         employeeRepository.save(employeeEntity);
 
     //    employees.add(employee);
-       return "saved successfully";
+       return "Saved successfully";
     }
 
     @Override
@@ -34,27 +39,56 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employee;
     }
 
-    @Override
-    public List<Employee> readEmployees() {
-       List<EmployeeEntity> employeesList= employeeRepository.findAll();
+    // @Override
+    // public List<Employee> readEmployees() {
+    //    List<EmployeeEntity> employeesList= employeeRepository.findAll();
 
-       for (EmployeeEntity employeeEntity : employeesList) {
-        Employee emp=new Employee();
+    //    for (EmployeeEntity employeeEntity : employeesList) {
+    //     Employee emp=new Employee();
+    //     emp.setId(employeeEntity.getId());
+    //     emp.setName(employeeEntity.getName());
+    //     emp.setEmail(employeeEntity.getEmail());
+    //     emp.setPhone(employeeEntity.getPhone());
+    //     employees.add(emp);
+    //    }
+    //     return employees;
+    // }
+
+    @Override
+public List<Employee> readEmployees() {
+    List<EmployeeEntity> employeesList = employeeRepository.findAll();
+    List<Employee> employeeDTOList = new ArrayList<>();
+
+    for (EmployeeEntity employeeEntity : employeesList) {
+        Employee emp = new Employee();
         emp.setId(employeeEntity.getId());
         emp.setName(employeeEntity.getName());
         emp.setEmail(employeeEntity.getEmail());
         emp.setPhone(employeeEntity.getPhone());
-        employees.add(emp);
-       }
-        return employees;
+        employeeDTOList.add(emp);
     }
+    return employeeDTOList;
+}
+
+
+    // @Override
+    // public boolean deleteEmployee(Long id) {
+    //     EmployeeEntity emp=employeeRepository.findById(id).get();
+    //     employeeRepository.delete(emp);
+    //     return true;
+    // }
 
     @Override
-    public boolean deleteEmployee(Long id) {
-        EmployeeEntity emp=employeeRepository.findById(id).get();
-        employeeRepository.delete(emp);
+public boolean deleteEmployee(Long id) {
+    Optional<EmployeeEntity> optionalEmp = employeeRepository.findById(id);
+    if (optionalEmp.isPresent()) {
+        employeeRepository.delete(optionalEmp.get());
         return true;
+    } else {
+        return false;
     }
+}
+
 
     @Override
     public String updateEmployee(Long id, Employee employee) {
