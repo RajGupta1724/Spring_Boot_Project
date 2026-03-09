@@ -11,12 +11,20 @@ services:
     runtime: java
     rootDir: emp-project
     buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/emp-project-0.0.1-SNAPSHOT.jar
+    startCommand: java -jar -Dspring.profiles.active=prod target/emp-project-0.0.1-SNAPSHOT.jar
     envVars:
-      - key: DATABASE_URL
+      - key: DB_HOST
         fromDatabase:
           name: emp-db
-          property: connectionURI
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: emp-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: emp-db
+          property: database
       - key: DATABASE_USERNAME
         fromDatabase:
           name: emp-db
