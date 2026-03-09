@@ -34,15 +34,13 @@ services:
       - key: FRONTEND_URL
         value: https://emp-project-view.onrender.com
 
-staticSites:
-  - name: emp-project-view
+  - type: web
+    name: emp-project-view
+    plan: free
+    runtime: node
     rootDir: emp-project/emp-project-view
-    buildCommand: npm install && npm run build
-    staticPublishPath: build
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    buildCommand: npm install && npm install -g serve && npm run build
+    startCommand: serve -s build -l $PORT
     envVars:
       - key: REACT_APP_API_URL
         value: https://emp-project-backend.onrender.com
