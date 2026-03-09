@@ -34,8 +34,8 @@ services:
       - key: FRONTEND_URL
         value: https://emp-project-view.onrender.com
 
-  - type: static
-    name: emp-project-view
+staticSites:
+  - name: emp-project-view
     rootDir: emp-project/emp-project-view
     buildCommand: npm install && npm run build
     staticPublishPath: build
